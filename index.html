@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sayısal Loto Oyunu</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    input {
+        width: 40px;
+        margin: 5px;
+    }
+    button {
+        padding: 10px 20px;
+        margin: 10px;
+    }
+</style>
+</head>
+<body>
+<h1>Sayısal Loto Oyunu</h1>
+Aşağıdaki kutucuklara tahminlerinizi giriniz.
+<div>
+    <input type="number" id="num1" min="1" max="49">
+    <input type="number" id="num2" min="1" max="49">
+    <input type="number" id="num3" min="1" max="49">
+    <input type="number" id="num4" min="1" max="49">
+    <input type="number" id="num5" min="1" max="49">
+    <input type="number" id="num6" min="1" max="49">
+</div>
+
+<button onclick="tahminGir()">Tahmin Gir</button>
+<button onclick="kurayiCek()" disabled>Kurayı Çek</button>
+<h4>Loto Sayıları</h4>
+<div>
+    <input type="text" id="lotonum1" min="1" max="49" disabled>
+    <input type="text" id="lotonum2" min="1" max="49" disabled>
+    <input type="text" id="lotonum3" min="1" max="49" disabled>
+    <input type="text" id="lotonum4" min="1" max="49" disabled>
+    <input type="text" id="lotonum5" min="1" max="49" disabled>
+    <input type="text" id="lotonum6" min="1" max="49" disabled>
+</div>
+<div id="bilinenSayilar"></div>
+<div id="bilinenSayiAdeti"></div>
+
+<script>
+    let tahminler = [];
+    let lotoSayilari = [];
+
+    function tahminGir() {
+        tahminler = [];
+        let inputs = document.querySelectorAll('input[type="number"]');
+        for (let i = 0; i < inputs.length; i++) {
+            let input = inputs[i];
+            if (input.value < 1 || input.value > 49) {
+                alert("1-49 arasında bir sayı girmelisiniz.");
+                return;
+            }
+            tahminler.push(parseInt(input.value));
+        }
+        if (new Set(tahminler).size !== 6) {
+            alert("Aynı tahmin bir kez girilebilir.");
+            return;
+        }
+        document.querySelectorAll('input[type="number"]').forEach(input => input.disabled = true);
+        document.querySelector('button:nth-of-type(1)').disabled = true;
+        document.querySelector('button:nth-of-type(2)').disabled = false;
+    }
+
+    function kurayiCek() {
+        lotoSayilari = Array.from({length: 49}, (_, i) => i + 1).sort(() => Math.random() - 0.5).slice(0, 6).sort((a, b) => a - b);
+        let bilinenSayilar = tahminler.filter(sayi => lotoSayilari.includes(sayi));
+        document.getElementById('bilinenSayilar').textContent = "Bilinen Sayılar: " + bilinenSayilar.join(", ");
+        document.getElementById('bilinenSayiAdeti').textContent = "Bilinen Sayı Adeti: " + bilinenSayilar.length;
+
+        // Loto sayılarını input alanlarında gösterme
+        lotoSayilari.forEach((sayi, index) => {
+            document.getElementById('lotonum' + (index + 1)).value = sayi;
+        });
+    }
+    
+</script>
+</body>
+</html>
